@@ -1,1 +1,2 @@
 gradio[mcp]
+rank-bm25
