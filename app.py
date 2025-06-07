@@ -12,4 +12,4 @@ gr.Interface(
         gr.Textbox(label="Retrieved Documents (one per line)", lines=6)
     ],
     outputs=gr.JSON(label="Relevance Scores")
-).launch()
+).launch(mcp_server=True)
