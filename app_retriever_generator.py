@@ -12,11 +12,6 @@ from generator_eval_tools import (
     length_consistency_checker,
 )
 
-from system_eval_tools import (
-    relevance_evaluator,
-    coverage_evaluator,
-)
-
 # Retriever tools
 bm25_tool = gr.Interface(
     fn=bm25_relevance_scorer,
@@ -61,20 +56,7 @@ length_consistency_tool = gr.Interface(
     outputs=gr.JSON(),
 )
 
-# System tools
-relevance_eval_tool = gr.Interface(
-    fn=relevance_evaluator,
-    inputs=[gr.Textbox(label="Query"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-coverage_eval_tool = gr.Interface(
-    fn=coverage_evaluator,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-# Final tabbed UI
+# Tabbed UI with all tools
 demo = gr.TabbedInterface(
     [
         bm25_tool,
@@ -83,9 +65,7 @@ demo = gr.TabbedInterface(
         exact_match_tool,
         repetition_tool,
         semantic_diversity_tool,
-        length_consistency_tool,
-        relevance_eval_tool,
-        coverage_eval_tool
+        length_consistency_tool
     ],
     [
         "BM25",
@@ -94,9 +74,7 @@ demo = gr.TabbedInterface(
         "Exact Match",
         "Repetition",
         "Semantic Diversity",
-        "Length Consistency",
-        "System Relevance",
-        "System Coverage"
+        "Length Consistency"
     ]
 )
 
