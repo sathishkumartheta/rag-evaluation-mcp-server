@@ -109,7 +109,7 @@ def hallucination_detector(generation: str, source_docs: str) -> Dict:
     from sentence_transformers import SentenceTransformer, util
     from retriever_eval_tools import parse_documents
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer("all-mpnet-base-v2")
 
     # Sentence splitting
     gen_sents = [s.strip() for s in re.split(r'[.?!]', generation) if s.strip()]
@@ -126,7 +126,7 @@ def hallucination_detector(generation: str, source_docs: str) -> Dict:
     doc_embs = model.encode(doc_sents, convert_to_tensor=True)
 
     sim_matrix = util.cos_sim(gen_embs, doc_embs)
-    threshold = 0.75
+    threshold = 0.80
     flagged = []
 
     for i, gen_sent in enumerate(gen_sents):
