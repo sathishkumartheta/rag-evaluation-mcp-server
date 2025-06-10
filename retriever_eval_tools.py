@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict,List
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer, util
 import re
@@ -36,7 +36,7 @@ def parse_documents(documents: str):
 
     return [documents.strip()] if documents.strip() else []
 
-# === 1. BM25 Scorer ===
+# 1. BM25 Scorer 
 def bm25_relevance_scorer(query: str, documents: str) -> Dict:
     """
     Compute relevance scores between a query and a list of documents using the BM25 algorithm.
@@ -72,7 +72,7 @@ def bm25_relevance_scorer(query: str, documents: str) -> Dict:
     return {"tool": "BM25 Relevance Scorer", "query": query, "results": results}
 
 
-# === 2. Semantic Relevance (Cosine Similarity) ===
+# 2. Semantic Relevance (Cosine Similarity)
 def semantic_relevance_scorer(query: str, documents: str) -> Dict:
     """
     Compute semantic relevance scores between a query and a list of documents using cosine similarity.
@@ -108,7 +108,7 @@ def semantic_relevance_scorer(query: str, documents: str) -> Dict:
     return {"tool": "Semantic Relevance Scorer", "query": query, "results": results}
 
 
-# === 3. Redundancy Checker ===
+# 3. Redundancy Checker 
 def redundancy_checker(_, documents: str) -> Dict:
     """
     Detect redundant or highly similar document pairs using semantic similarity.
@@ -151,7 +151,7 @@ def redundancy_checker(_, documents: str) -> Dict:
     }
 
 
-# === 4. Exact Match Checker ===
+# 4. Exact Match Checker 
 def exact_match_checker(query: str, documents: str) -> Dict:
     """
     Check if each document contains the exact query string as a substring (case-insensitive).
@@ -188,3 +188,4 @@ def exact_match_checker(query: str, documents: str) -> Dict:
         "query": query,
         "results": results
     }
+

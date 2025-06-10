@@ -4,6 +4,9 @@ from retriever_eval_tools import (
     semantic_relevance_scorer,
     redundancy_checker,
     exact_match_checker,
+    ranking_consistency_checker,
+    document_novelty_scorer,
+    topic_diversity_evaluator,
 )
 
 from generator_eval_tools import (
@@ -17,87 +20,33 @@ from system_eval_tools import (
     coverage_evaluator,
 )
 
-# Retriever tools
-bm25_tool = gr.Interface(
-    fn=bm25_relevance_scorer,
-    inputs=[gr.Textbox(label="Query"), gr.Textbox(label="Documents")],
-    outputs=gr.JSON(),
-)
+with gr.Blocks() as demo:
+    with gr.Tab("Retriever Eval"):
+        gr.Markdown("## Retriever Evaluation Tools")
+        gr.Interface(bm25_relevance_scorer, [gr.Textbox(label="Query"), gr.Textbox(label="Documents")], gr.JSON()).render()
+        gr.Interface(semantic_relevance_scorer, [gr.Textbox(label="Query"), gr.Textbox(label="Documents")], gr.JSON()).render()
+        gr.Interface(redundancy_checker, [gr.Textbox(label="Unused"), gr.Textbox(label="Documents")], gr.JSON()).render()
+        gr.Interface(exact_match_checker, [gr.Textbox(label="Query"), gr.Textbox(label="Documents")], gr.JSON()).render()
+        gr.Interface(ranking_consistency_checker, [
+            gr.Textbox(label="Original Query"),
+            gr.Textbox(label="Paraphrased Query"),
+            gr.Textbox(label="Documents")
+        ], gr.JSON()).render()
+        gr.Interface(document_novelty_scorer, [gr.Textbox(label="Documents")], gr.JSON()).render()
+        gr.Interface(topic_diversity_evaluator, [
+            gr.Textbox(label="Documents"),
+            gr.Number(label="Number of Clusters", value=3)
+        ], gr.JSON()).render()
 
-semantic_tool = gr.Interface(
-    fn=semantic_relevance_scorer,
-    inputs=[gr.Textbox(label="Query"), gr.Textbox(label="Documents")],
-    outputs=gr.JSON(),
-)
+    with gr.Tab("Generator Eval"):
+        gr.Markdown("## Generator Evaluation Tools")
+        gr.Interface(repetition_checker, [gr.Textbox(label="Unused"), gr.Textbox(label="Generations")], gr.JSON()).render()
+        gr.Interface(semantic_diversity_checker, [gr.Textbox(label="Unused"), gr.Textbox(label="Generations")], gr.JSON()).render()
+        gr.Interface(length_consistency_checker, [gr.Textbox(label="Unused"), gr.Textbox(label="Generations")], gr.JSON()).render()
 
-redundancy_tool = gr.Interface(
-    fn=redundancy_checker,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Documents")],
-    outputs=gr.JSON(),
-)
+    with gr.Tab("System Eval"):
+        gr.Markdown("## System Evaluation Tools")
+        gr.Interface(relevance_evaluator, [gr.Textbox(label="Query"), gr.Textbox(label="Generations")], gr.JSON()).render()
+        gr.Interface(coverage_evaluator, [gr.Textbox(label="Unused"), gr.Textbox(label="Generations")], gr.JSON()).render()
 
-exact_match_tool = gr.Interface(
-    fn=exact_match_checker,
-    inputs=[gr.Textbox(label="Query"), gr.Textbox(label="Documents")],
-    outputs=gr.JSON(),
-)
-
-# Generator tools
-repetition_tool = gr.Interface(
-    fn=repetition_checker,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-semantic_diversity_tool = gr.Interface(
-    fn=semantic_diversity_checker,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-length_consistency_tool = gr.Interface(
-    fn=length_consistency_checker,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-# System tools
-relevance_eval_tool = gr.Interface(
-    fn=relevance_evaluator,
-    inputs=[gr.Textbox(label="Query"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-coverage_eval_tool = gr.Interface(
-    fn=coverage_evaluator,
-    inputs=[gr.Textbox(label="Unused"), gr.Textbox(label="Generations")],
-    outputs=gr.JSON(),
-)
-
-# Final tabbed UI
-demo = gr.TabbedInterface(
-    [
-        bm25_tool,
-        semantic_tool,
-        redundancy_tool,
-        exact_match_tool,
-        repetition_tool,
-        semantic_diversity_tool,
-        length_consistency_tool,
-        relevance_eval_tool,
-        coverage_eval_tool
-    ],
-    [
-        "BM25",
-        "Semantic",
-        "Redundancy",
-        "Exact Match",
-        "Repetition",
-        "Semantic Diversity",
-        "Length Consistency",
-        "System Relevance",
-        "System Coverage"
-    ]
-)
-
-demo.launch(mcp_server=True, share=True)
+demo.launch(share=True, mcp_server=True)
